@@ -17,6 +17,8 @@ composer setup
 ## Running the app
 
 ```bash
+php artisan dev # new command
+
 composer dev
 ```
 

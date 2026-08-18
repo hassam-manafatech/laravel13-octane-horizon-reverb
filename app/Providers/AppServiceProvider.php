@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Foundation\DevCommands;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configureDevCommands();
     }
 
     /**
@@ -46,5 +48,16 @@ class AppServiceProvider extends ServiceProvider
                 ->uncompromised()
             : null,
         );
+    }
+
+    /**
+     * Swap the default serve/queue:listen dev processes for Octane, Horizon, and Reverb.
+     */
+    protected function configureDevCommands(): void
+    {
+        DevCommands::except('server', 'queue');
+        DevCommands::artisan('octane:start', 'octane');
+        DevCommands::artisan('horizon', 'horizon');
+        DevCommands::artisan('reverb:start --debug', 'reverb');
     }
 }
